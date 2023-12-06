@@ -3,7 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const startDB = require('./db/db')
 const { MongoClient } = require('mongodb')
-const uri = process.env.MONGDB_URI
+const uri = process.env.MONGODB_URI
 const client = new MongoClient(uri)
 
 const app = express()
