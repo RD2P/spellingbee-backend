@@ -10,13 +10,10 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-//serve react app
-app.use(express.static('../frontend/dist'))
-
 //Define collection
 const collection = client.db('spellingbee').collection('words')
 
-const words = []
+let words = []
 
 //get list of words form db and store in array
 const getAllWords = async (req, res) => {
@@ -31,13 +28,18 @@ const getRandomIndex = () => {
   return randomIndex
 }
 
-app.get('/api/v1/random', async (req, res) => {
+app.get('/api/v1/word', async (req, res) => {
   const randomIndex = getRandomIndex()
   const randomWord = words[randomIndex]
   const word = await collection.findOne({ word: randomWord })
-  // words.splice(randomIndex, 1)
-  res.json(word)
+  words.splice(randomIndex, 1)
+  res.json({ "wordsLeft": words.length, "word": word })
   res.end()
+})
+
+app.post('/api/v1/words', (req, res) => {
+  getAllWords()
+  res.json(words)
 })
 
 
