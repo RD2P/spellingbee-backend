@@ -1,4 +1,3 @@
-const cors = require('cors')
 require('dotenv').config()
 const express = require('express')
 const startDB = require('./db/db')
@@ -8,13 +7,11 @@ const client = new MongoClient(uri)
 
 const app = express()
 app.use(express.json())
-app.use(cors())
 
 //Define collection
 const collection = client.db('spellingbee').collection('words')
 
-
-
+//provide list of words to client
 app.get('/api/v1/words', async (req, res) => {
   const allWords = await collection.find({}).toArray()
   let words = []
@@ -22,6 +19,7 @@ app.get('/api/v1/words', async (req, res) => {
   res.json(words)
 })
 
+//grab random word for client
 app.get('/api/v1/word', async (req, res) => {
   const randomWord = req.query.w
   const word = await collection.findOne({ word: randomWord })
