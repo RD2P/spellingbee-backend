@@ -13,35 +13,21 @@ app.use(cors())
 //Define collection
 const collection = client.db('spellingbee').collection('words')
 
-let words = []
 
-//get list of words form db and store in array
-const getAllWords = async (req, res) => {
+
+app.get('/api/v1/words', async (req, res) => {
   const allWords = await collection.find({}).toArray()
+  let words = []
   for (doc of allWords) words.push(doc.word)
-}
-
-getAllWords()
-
-const getRandomIndex = () => {
-  const randomIndex = Math.floor(Math.random() * words.length)
-  return randomIndex
-}
-
-app.get('/api/v1/word', async (req, res) => {
-  const randomIndex = getRandomIndex()
-  const randomWord = words[randomIndex]
-  const word = await collection.findOne({ word: randomWord })
-  words.splice(randomIndex, 1)
-  res.json({ "wordsLeft": words.length, "word": word })
-  res.end()
-})
-
-app.post('/api/v1/words', (req, res) => {
-  getAllWords()
   res.json(words)
 })
 
+app.get('/api/v1/word', async (req, res) => {
+  const randomWord = req.query.w
+  const word = await collection.findOne({ word: randomWord })
+  res.json(word)
+  res.end()
+})
 
 const PORT = process.env.PORT || 4000
 
