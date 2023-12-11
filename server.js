@@ -1,3 +1,4 @@
+const cors = require('cors')
 require('dotenv').config()
 const express = require('express')
 const startDB = require('./db/db')
@@ -7,6 +8,7 @@ const client = new MongoClient(uri)
 
 const app = express()
 app.use(express.json())
+app.use(cors())
 
 //Define collection
 const collection = client.db('spellingbee').collection('words')
